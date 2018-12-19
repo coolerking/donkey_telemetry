@@ -1,58 +1,100 @@
-<!-- This is a static file -->
-<!-- served from your routes in server.js -->
-
-<!-- You might want to try something fancier: -->
-<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
-<!-- pug: https://pugjs.org/ -->
-<!-- haml: http://haml.info/ -->
-<!-- hbs(handlebars): http://handlebarsjs.com/ -->
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <title>Welcome to Glitch!</title>
-    <meta name="description" content="A cool thing made with Glitch">
-    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="/style.css">
-    
-    <!-- import the webpage's client-side javascript file -->
-    <script src="/client.js" defer></script>
+    <title>Donkey Telemetry v2</title>
+    <link rel="stylesheet" href="/d3.css">
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="/viz.v1.js"></script>
+    <!-- script src="http://vizjs.org/viz.v1.0.0.min.js"></script -->
+    <script
+		  src="https://code.jquery.com/jquery-3.3.1.min.js"
+		  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		  crossorigin="anonymous"></script>
   </head>
-  <body>
-    <header>
-      <h1>
-        A Dream of the Future
-      </h1>
-    </header>
+<body>
+<h1>Emperor Telemetry</h1>
 
-    <main>
-      <p class="bold">Oh hi,</p>
-      
-      <p>Tell me your hopes and dreams:</p>
-      
-      <form>
-        <input name="dream" type="text" maxlength="100" placeholder="Dreams!" aria-labelledby="submit-dream">
-        <button type="submit" id="submit-dream">Submit Dream</button>
-      </form>
-      
-      <section class="dreams">
-        <ul id="dreams"></ul>
-      </section>
-    </main>
+  <svg width="1150" height="700"></svg>
+  <script>
+  let svg=d3.select("svg");
+  
+  function mid(d){ return 0.5*(d[1]+d[0])}
+  
+  svg.attr("xmlns:xlink", "http://www.w3.org/1999/xlink").attr("xmlns","http://www.w3.org/2000/svg")
+  // green gauge : angle
+  let g2=svg.append("g").attr("class","green").attr("transform","translate(200,300)");
+  let domain2 = [-50,50];
 
-    <footer>
-      Made with <a href="https://glitch.com">Glitch</a>!
-    </footer>
+  let gg2 = viz.gg()
+		.domain(domain2)
+		.ticks(d3.range(domain2[0], domain2[1]+1,4))
+		.majorTicks(function(d){return (d-10)%20===0})
+		.innerFaceColor("#4F8730")
+		.faceColor("#4F8730")
+		.needleColor("#F74100")
+		.outerRadius(200)
+		.innerRadius(20)
+		.value(mid(domain2))
+		.duration(1000)
+		.angleOffset(Math.PI/2)
+		.ease("back-in");
+  gg2.defs(svg,2);
+  g2.call(gg2);
+  
+  let cam = svg.append("image").attr("id", "imgTest").attr("width", "160").attr("height", "120").attr("x", "423").attr("y","240")
+  // black gauge : throttle
+  let g3=svg.append("g").attr("class","red").attr("transform","translate(800,305)");
+  let domain3 = [0,100];
+  let gg3 = viz.gg()
+		.domain(domain3)
+		.outerRadius(200)
+		.innerRadius(20)
+		.value(mid(domain3))
+		.duration(1000)
+		.ease("bounce");
 
-    <!-- include the Glitch button to show what the webpage is about and
-          to make it easier for folks to view source and remix -->
-    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
-    <script src="https://button.glitch.me/button.js"></script>
+  gg3.defs(svg,3);
+  g3.call(gg3);  
 
-  </body>
+  // node.js via ajax
+  setInterval( function(){
+    $.ajax({
+      url: '/telem',
+      type: 'POST',
+      data:{}
+    })
+    .done( (msg) => {
+      console.log("[done] arrive");
+      //console.log(msg);
+      gg2.setNeedle(msg.angle);
+      gg3.setNeedle(msg.throttle);
+    })
+    .fail( (msg) => {
+      console.log("[fail]")
+      console.log(msg)
+    })
+    .always( (msg) => {
+    });},
+  800);
+
+  setInterval(function(){
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/image', true);
+    xhr.responseType = 'blob';
+    xhr.onload = function(e) {
+        // ArrayBufferで返ってくる
+        console.log(this.response);
+        let img = document.getElementById("imgTest");
+        let url = window.URL || window.webkitURL;
+        img.data = url.createObjectURL(this.response);
+        cam.attr("xlink:href", url.createObjectURL(this.response));
+    };
+
+    xhr.send();
+  }, 800);
+    
+  d3.select(self.frameElement).style("height", "350px");
+</script>
+</body>
 </html>
