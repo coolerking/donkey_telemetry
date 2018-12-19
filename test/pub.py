@@ -1,27 +1,26 @@
 # -*- coding: utf-8 -*-
 """
 IBM Watson IoT Platform 用テストPublisher。
-
+一定間隔ごとに指定のイメージファイルを送信し続ける。
 
 Usage:
-    pub.py [--conf=CONFIG_PATH] [--interval=INTERVAL_SECS]
+    pub.py [--conf=CONFIG_PATH] [--image=IMAGE_PATH] [--interval=INTERVAL_SECS]
 
 Options:
-    --config=CONFIG_PATH    設定ファイルパス。
+    --config=CONFIG_PATH      設定ファイルパス。
+    --image=IMAGE_PATH        送信するイメージファイルのパス。
     --interval=INTERVAL_SECS  publish間のインターバル時間（秒）。
 """
-# -*- coding: utf-8 -*-
 import os
-import subprocess
+import pytz
 import json
 import random
-import datetime
+from datetime import datetime
 import docopt
 from time import sleep
 import ibmiotf.device
 from ibmiotf import MessageCodec, Message, InvalidEventException
-#import ibmiotf.device
-import ibmiotf.application
+#import ibmiotf.application
 
 class ImageCodec(MessageCodec):
     """
@@ -62,13 +61,20 @@ class ImageCodec(MessageCodec):
         #    data = np.reshape(data, (120, 160, 3))
         #except ValueError as e:
         #    raise InvalidEventException("Unable to parse image.  payload=\"%s\" error=%s" % (message.payload, str(e)))
-        
         timestamp = datetime.now(pytz.timezone('UTC'))
         
         # TODO: Flatten JSON, covert into array of key/value pairs
         return Message(data, timestamp)
 
 def publish_forever(config_path='emperor.ini', data=None, interval=10):
+    """
+    一定間隔でpublishを繰り返す。
+
+    引数
+        config_path     設定ファイルパス
+        data            イメージデータ
+        interval        間隔
+    """
     try:
         options = ibmiotf.device.ParseConfigFile(config_path)
         client = ibmiotf.device.Client(options)
@@ -88,10 +94,15 @@ def publish_forever(config_path='emperor.ini', data=None, interval=10):
                 "angle": random.uniform(-1, 1),
                 "timestamp": str(datetime.datetime.now()),
                 "throttle": random.uniform(-1, 1)}
-            message = json.dumps(msg)
+            #message = json.dumps(msg)
+            client.publishEvent(event='status', msgFormat='json', data=msg, qos=0)
+            print('[publish_forever] published :' + json.dumps(msg))
+
+            sleep(interval)
 
             client.publishEvent(event='status', msgFormat='image', data=data, qos=0)
             print('[publish_forever] published :' + str(data))
+
             sleep(interval)
     finally:
         client.disconnect()
@@ -110,12 +121,13 @@ if __name__ == '__main__':
         interval = 10
     else:
         interval = float(interval)
-  
-  
-    with open('1_cam-image_array_.jpg', 'br') as f:
-      data = f.read()
-    print(type(data))
     
+    image_path = args['--image']
+    if image_path is None:
+        image_path='donkey.png'
   
+    with open(image_path, 'br') as f:
+      data = f.read()
+
     publish_forever(conf_path, data, interval)
     print('[__main__] end')
