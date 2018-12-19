@@ -1,27 +1,33 @@
-Welcome to Glitch
-=================
+# Donkey Telemetry v3
 
-Click `Show` in the header to see your app live. Updates to your code will instantly deploy and update live.
-
-**Glitch** is the friendly community where you'll build the app of your dreams. Glitch lets you instantly create, remix, edit, and host an app, bot or site, and you can invite collaborators or helpers to simultaneously edit code with you.
-
-Find out more [about Glitch](https://glitch.com/about).
+Donkey Car上のパーツからMQTTブローカへ送信されているデータを可視化する。
 
 
-Your Project
-------------
 
-On the front-end,
-- edit `public/client.js`, `public/style.css` and `views/index.html`
-- drag in `assets`, like images or music, to add them to your project
+## 表示データ
 
-On the back-end,
-- your app starts at `server.js`
-- add frameworks and packages in `package.json`
-- safely store app secrets in `.env` (nobody can see this but you and people you invite)
+![表示例](./assets/meter.png)
+
+- （左）ステアリング値
+   ステアリングを最左(-50) から最右(+50)までのアナログメータで表現する。正面は0を示す。入力デバイスにより-50,0,50しかとらない場合がある。
+- （中央）画像イメージ
+   最新のカメライメージ画像。静止画像である。
+- （右）スロットル値
+   スロットルレベルを最大100から速度0までで表現している。
+
+## アーキテクチャ
+
+![アーキテクチャ](./assets/architecture.png)
+
+MQTTをハブとした非同期通信で実現している。
+
+- [Donkey Car](http://donkeycar.com)
+   自律走行をRaspberryPiや市販のRCカーで実現できるオープンソースの自動運転プラットフォーム。
+- [IBM Watson IoT Platform](https://www.ibm.com/jp-ja/marketplace/internet-of-things-cloud)
+   IBM Cloud上で提供しているMQTTブローカサービス。検証はライトプランの無料枠で実施。
+- [Glitch.com](https://glitch.com)
+   Node.js開発・実行環境を無料で提供してくれるサービス。シェルコンソールもありpython3.xも既にインストール済みであるため、テストスクリプトの実行も可能。GitHub連携可能。
+
+本リポジトリはGlitch.com上で動作するコードのみ格納されている。[Donkey Carパーツ](https://github.com/coolerking/donkeypart_telemetry) 側はこちらを参照のこと。
 
 
-Made by [Glitch](https://glitch.com/)
--------------------
-
-\ ゜o゜)ノ
