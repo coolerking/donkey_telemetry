@@ -10,7 +10,8 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "ibmiotf": "^0.2.41"
   },
   "engines": {
     "node": "8.x"
