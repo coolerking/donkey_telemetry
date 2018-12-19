@@ -59,7 +59,7 @@ const appClientConfig  = {
   "org": process.env.ORG_ID,
   "id": process.env.APP_ID,
   "auth-key": process.env.API_KEY,
-  "auth-token": "hZo(hjxEu@&fxK*7XW"
+  "auth-token": process.env.SECURITY_TOKEN
 }
 
 // アプリケーション設定をセット
