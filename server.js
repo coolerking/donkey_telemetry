@@ -74,7 +74,7 @@ appClient.connect();
 appClient.on("connect", function () {
   console.log("[on connect] start");
   // json/image 両方取得
-  appClient.subscribeToDeviceEvents("donkeycar","emperor", "status");
+  appClient.subscribeToDeviceEvents("donkeycar","emperor", "status", "+");
 });
 
 // エラー発生時処理
@@ -89,13 +89,14 @@ appClient.on("deviceEvent", function (deviceType, deviceId, eventType, format, p
   if(format=="image"){
     image = payload;
     console.log("[on deviceEvent] update image");
-  }
-  if(format=="json"){
+  }else{
     // メータ定義域にあわせて値を調整
     let message = JSON.parse(payload.toString());
-    message.throttle = ((message.throttle - (-1.0))/2.0)*100.0;
-    message.angle = message.angle * 50.0;
+    let throttle = ((message.throttle - (-1.0))/2.0)*100.0;
+    let angle = message.angle * 50.0;
+    message.throttle = throttle;
+    message.angle = angle
     msg = message;
-    console.log("[on deviceEvent] update msg")
+    console.log("[on deviceEvent] update msg "+ msg)
   }
 });

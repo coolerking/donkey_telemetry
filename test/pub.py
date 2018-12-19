@@ -92,7 +92,7 @@ def publish_forever(config_path='emperor.ini', data=None, interval=10):
             # dummy msg
             msg ={
                 "angle": random.uniform(-1, 1),
-                "timestamp": str(datetime.datetime.now()),
+                "timestamp": str(datetime.now()),
                 "throttle": random.uniform(-1, 1)}
             #message = json.dumps(msg)
             client.publishEvent(event='status', msgFormat='json', data=msg, qos=0)
@@ -101,7 +101,7 @@ def publish_forever(config_path='emperor.ini', data=None, interval=10):
             sleep(interval)
 
             client.publishEvent(event='status', msgFormat='image', data=data, qos=0)
-            print('[publish_forever] published :' + str(data))
+            print('[publish_forever] published : <image>')
 
             sleep(interval)
     finally:
