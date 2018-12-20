@@ -2,6 +2,11 @@
 // server.js
 // where your node app starts
 
+var fs = require('fs');
+
+// 最新のイメージデータ
+let image;
+
 // express
 const express = require('express');
 const app = express();
@@ -20,16 +25,17 @@ app.get('/', function(request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
-// 最新のイメージデータ
-let image;
 
 // 最新のイメージデータを返信
 app.post('/image', function(req, res) {
     if(image) {
-        // バイナリのまま返信
-        res.send(image);
-    } else {
-        res.status(404).send();
+      // バイナリのまま返信
+      console.log("send image");
+      res.writeHead(200, {"Content-Type": "image/jpeg"});
+      console.log(image);
+      res.write(image);
+      res.end();
+      //res.send(image);
     }
 });
 
@@ -59,7 +65,7 @@ const appClientConfig  = {
   "org": process.env.ORG_ID,
   "id": process.env.APP_ID,
   "auth-key": process.env.API_KEY,
-  "auth-token": process.env.SECURITY_TOKEN
+  "auth-token": "hZo(hjxEu@&fxK*7XW"
 }
 
 // アプリケーション設定をセット

@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Donkey Telemetry v2</title>
+    <title>Donkey Telemetry v3</title>
     <link rel="stylesheet" href="/d3.css">
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="/viz.v1.js"></script>
@@ -42,7 +42,7 @@
   gg2.defs(svg,2);
   g2.call(gg2);
   
-  let cam = svg.append("image").attr("id", "imgTest").attr("width", "160").attr("height", "120").attr("x", "423").attr("y","240")
+  let cam = svg.append("image").attr("id", "imgTest").attr("width", "160").attr("height", "120").attr("x", "423").attr("y","240").attr("xlink:href", "/public/v.jpg")
   // black gauge : throttle
   let g3=svg.append("g").attr("class","red").attr("transform","translate(800,305)");
   let domain3 = [0,100];
@@ -66,7 +66,7 @@
     })
     .done( (msg) => {
       console.log("[done] arrive");
-      //console.log(msg);
+      console.log(msg);
       gg2.setNeedle(msg.angle);
       gg3.setNeedle(msg.throttle);
     })
@@ -75,9 +75,23 @@
       console.log(msg)
     })
     .always( (msg) => {
-    });},
-  800);
+    });
+    console.log("image")
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/image', true);
+    xhr.responseType = 'blob';
+    xhr.onload = function(e) {
+        // ArrayBufferで返ってくる
+        console.log(this.response);
+        let img = document.getElementById("imgTest");
+        let url = window.URL || window.webkitURL;
+        img.data = url.createObjectURL(this.response);
+        cam.attr("xlink:href", url.createObjectURL(this.response));
+    };
 
+    xhr.send();
+  }, 800);
+/*
   setInterval(function(){
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/image', true);
@@ -93,7 +107,7 @@
 
     xhr.send();
   }, 800);
-    
+  */  
   d3.select(self.frameElement).style("height", "350px");
 </script>
 </body>
