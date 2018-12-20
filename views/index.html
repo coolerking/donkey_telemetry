@@ -42,7 +42,7 @@
   gg2.defs(svg,2);
   g2.call(gg2);
   
-  let cam = svg.append("image").attr("id", "imgTest").attr("width", "160").attr("height", "120").attr("x", "423").attr("y","240").attr("xlink:href", "/public/v.jpg")
+  let cam = svg.append("image").attr("id", "imgTest").attr("width", "160").attr("height", "120").attr("x", "423").attr("y","240").attr("xlink:href", "https://cdn.glitch.com/fd8eb80c-f770-4fe1-b5f9-4ffc6cf86a79%2Fv.jpg?1545261449040")
   // black gauge : throttle
   let g3=svg.append("g").attr("class","red").attr("transform","translate(800,305)");
   let domain3 = [0,100];
@@ -91,24 +91,7 @@
 
     xhr.send();
   }, 800);
-/*
-  setInterval(function(){
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/image', true);
-    xhr.responseType = 'blob';
-    xhr.onload = function(e) {
-        // ArrayBufferで返ってくる
-        console.log(this.response);
-        let img = document.getElementById("imgTest");
-        let url = window.URL || window.webkitURL;
-        img.data = url.createObjectURL(this.response);
-        cam.attr("xlink:href", url.createObjectURL(this.response));
-    };
-
-    xhr.send();
-  }, 800);
-  */  
   d3.select(self.frameElement).style("height", "350px");
-</script>
+  </script>
 </body>
 </html>
