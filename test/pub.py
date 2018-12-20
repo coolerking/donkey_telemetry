@@ -64,7 +64,7 @@ class ImageCodec(MessageCodec):
         timestamp = datetime.now(pytz.timezone('UTC'))
         
         # TODO: Flatten JSON, covert into array of key/value pairs
-        return Message(data, timestamp)
+        return Message(message, timestamp)
 
 def publish_forever(config_path='emperor.ini', data=None, interval=10):
     """
