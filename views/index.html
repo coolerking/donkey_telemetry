@@ -81,12 +81,22 @@
     xhr.open('POST', '/image', true);
     xhr.responseType = 'blob';
     xhr.onload = function(e) {
-        // ArrayBufferで返ってくる
-        console.log(this.response);
-        let img = document.getElementById("imgTest");
-        let url = window.URL || window.webkitURL;
-        img.data = url.createObjectURL(this.response);
-        cam.attr("xlink:href", url.createObjectURL(this.response));
+      if(xhr.readyState == 4) { // 通信完了時
+        if(xhr.status == 200){ 
+          // ArrayBufferで返ってくる
+          console.log(this.response);
+          let img = document.getElementById("imgTest");
+          let url = window.URL || window.webkitURL;
+          img.data = url.createObjectURL(this.response);
+          cam.attr("xlink:href", url.createObjectURL(this.response));
+        }else{
+          console.log(xhr.status);
+        }
+      }else{
+        console.log("recieving..");
+        console.log(xhr.readyState);
+        console.log(e);
+      }
     };
 
     xhr.send();
