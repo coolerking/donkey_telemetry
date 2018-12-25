@@ -124,7 +124,7 @@ Donkey Car側パーツのダミーを使用したい場合は、以下の手順�
    pip3 install docopt
    pip3 install ibmiotf
    ```
-5. `test/<デバイスID>.ini`ファイルを作成し、以下のように編集(デバイス側の認証情報を記入する、組織IDは共通)
+5. `test/iotf/template.ini`ファイルを編集(デバイス側の認証情報を記入する、組織IDは共通)
    ```ini
    [device]
    org={org_id}
@@ -137,7 +137,7 @@ Donkey Car側パーツのダミーを使用したい場合は、以下の手順�
 6. 以下のコマンドを実行して、ダミーパブリッシャを起動
    ```bash
    cd test
-   python3 pub.py --conf <デバイスID>.ini
+   python3 pub.py
    ```
 
 ### Webアプリ画面の表示
