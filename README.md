@@ -2,8 +2,6 @@
 
 Donkey Car上のパーツからMQTTブローカへ送信されているデータを可視化する。
 
-
-
 ## 表示データ
 
 ![表示例](./assets/meter.png)
@@ -25,6 +23,8 @@ MQTTをハブとした非同期通信で実現している。
    自律走行をRaspberryPiや市販のRCカーで実現できるオープンソースの自動運転プラットフォーム。
 - [IBM Watson IoT Platform](https://www.ibm.com/jp-ja/marketplace/internet-of-things-cloud)
    IBM Cloud上で提供しているMQTTブローカサービス。検証はライトプランの無料枠で実施。
+- [Amazon Web Service IoT Core](https://aws.amazon.com/jp/)
+   AWS が提供しているMQTTブローカサービス。有料版で検証。
 - [Glitch.com](https://glitch.com)
    Node.js開発・実行環境を無料で提供してくれるサービス。シェルコンソールもありpython3.xも既にインストール済みであるため、テストスクリプトの実行も可能。GitHub連携可能。
 
@@ -94,17 +94,20 @@ IoT Platform でサブスクライバを作成する場合、「アプリケー�
 * test/test.jpg
 * view/index.html
 * package.json
-* servers.js
+* server_ibm.js (server.jsにリネーム)
+
+> IoT Platform のかわりに AWS IoT Coreを使用する場合は `server_aws.js` をリネームして使用する。
 
 ### IoT Platform 認証情報の書き込み
 
 1. `.env`の最終行に追加(書き留めたキーワードを入力、中括弧は削除、APP_IDはIoT Platforに接続するアプリで一意であれば適当で良い)
-   ```ini
-   ORG_ID={org_id}
-   APP_ID=telemetry
-   API_KEY={api_key}
-   SECRET_TOKEN={security_token}
-   ``` 
+
+```ini
+ORG_ID={org_id}
+APP_ID=telemetry
+API_KEY={api_key}
+SECRET_TOKEN={security_token}
+``` 
 
 > SECRET_TOKENの生成文字列に寄ってはserver.jsの辞appClientConfigに直接書かないと認識しない場合がある。
 > ```
